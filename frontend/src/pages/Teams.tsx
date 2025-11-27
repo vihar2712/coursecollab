@@ -43,7 +43,10 @@ interface Team {
   maxMembers: number;
   isLocked: boolean;
   description: string;
-  skills: string[];
+  skills: Array<{
+    id: string;
+    label: string
+  }>;
 }
 
 const Teams: React.FC = () => {
@@ -74,7 +77,7 @@ const Teams: React.FC = () => {
         maxMembers: 4,
         isLocked: false,
         description: 'Full-stack web development team',
-        skills: ['React', 'Node.js', 'MongoDB'],
+        skills: [{ id: '1', label: 'React' }, { id: '2', label: 'Node.js' }, { id: '3', label: 'MongoDB' }],
       },
       {
         id: '2',
@@ -89,10 +92,10 @@ const Teams: React.FC = () => {
         maxMembers: 3,
         isLocked: true,
         description: 'Database optimization specialists',
-        skills: ['SQL', 'PostgreSQL', 'Redis'],
+        skills: [{ id: '1', label: 'SQL' }, { id: '2', label: 'PostgreSQL' }, { id: '3', label: 'Redis' }],
       },
     ];
-    
+
     setTeams(mockTeams);
   }, []);
 
@@ -112,7 +115,7 @@ const Teams: React.FC = () => {
       description: newTeam.description,
       skills: [],
     };
-    
+
     setTeams([...teams, team]);
     setOpenDialog(false);
     setNewTeam({ name: '', description: '', maxMembers: 4 });
@@ -145,8 +148,8 @@ const Teams: React.FC = () => {
       <Grid container spacing={3}>
         {teams.map((team) => (
           <Grid item xs={12} md={6} lg={4} key={team.id}>
-            <Card 
-              sx={{ 
+            <Card
+              sx={{
                 height: '100%',
                 cursor: 'pointer',
                 transition: 'transform 0.2s',
@@ -197,10 +200,10 @@ const Teams: React.FC = () => {
                       Skills
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {team.skills.map((skill, index) => (
+                      {team.skills.map((skill) => (
                         <Chip
-                          key={index}
-                          label={skill}
+                          key={skill.id}
+                          label={skill.label}
                           size="small"
                           variant="outlined"
                         />

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { createServer } = require('http');
+const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 require('dotenv').config();
 

@@ -58,7 +58,7 @@ interface TabPanelProps {
   value: number;
 }
 
-function TabPanel(props: TabPanelProps) {
+function TabPanel(props: Readonly<TabPanelProps>) {
   const { children, value, index, ...other } = props;
   return (
     <div
@@ -118,7 +118,7 @@ const Reviews: React.FC = () => {
         quality: review.quality,
         timeliness: review.timeliness,
       }));
-      
+
       setReviews(transformedReviews);
     } catch (error) {
       console.error('Error fetching reviews:', error);
@@ -135,9 +135,9 @@ const Reviews: React.FC = () => {
 
   const filteredReviews = reviews.filter(review => {
     const matchesSearch = review.assignment.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         review.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         review.reviewee.toLowerCase().includes(searchTerm.toLowerCase());
-    
+      review.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      review.reviewee.toLowerCase().includes(searchTerm.toLowerCase());
+
     switch (tabValue) {
       case 0: return matchesSearch; // All
       case 1: return matchesSearch && review.status === 'pending';
@@ -215,8 +215,8 @@ const Reviews: React.FC = () => {
       <Grid container spacing={3}>
         {filteredReviews.map((review) => (
           <Grid item xs={12} md={6} lg={4} key={review.id}>
-            <Card 
-              sx={{ 
+            <Card
+              sx={{
                 height: '100%',
                 cursor: 'pointer',
                 transition: 'transform 0.2s',
@@ -258,9 +258,9 @@ const Reviews: React.FC = () => {
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       Progress: {Math.round(getProgressPercentage(review))}%
                     </Typography>
-                    <LinearProgress 
-                      variant="determinate" 
-                      value={getProgressPercentage(review)} 
+                    <LinearProgress
+                      variant="determinate"
+                      value={getProgressPercentage(review)}
                       sx={{ mb: 1 }}
                     />
                   </Box>

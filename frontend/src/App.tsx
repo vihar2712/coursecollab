@@ -31,11 +31,11 @@ const App: React.FC = () => {
         <Routes>
           <Route 
             path="/login" 
-            element={!user ? <Login /> : <Navigate to="/dashboard" />} 
+            element={user ? <Navigate to="/dashboard" /> : <Login />} 
           />
           <Route 
             path="/register" 
-            element={!user ? <Register /> : <Navigate to="/dashboard" />} 
+            element={user ? <Navigate to="/dashboard" /> : <Register />} 
           />
           <Route 
             path="/dashboard" 

@@ -13,19 +13,15 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Alert,
 } from '@mui/material';
 import {
-  Assignment,
   Schedule,
   Upload,
   RateReview,
-  Description,
   AttachFile,
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { useAuth } from '../contexts/AuthContext';
 
 const AssignmentDetail: React.FC = () => {
   const { id } = useParams();
