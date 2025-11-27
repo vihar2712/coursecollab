@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1764273406828" clover="3.2.0">
+  <project timestamp="1764273406829" name="All files">
+    <metrics statements="42" coveredstatements="12" conditionals="32" coveredconditionals="12" methods="8" coveredmethods="1" elements="82" coveredelements="25" complexity="0" loc="42" ncloc="42" packages="1" files="1" classes="1"/>
+    <file name="courseService.js" path="C:\Users\vshah23\Desktop\fall 2025\CSC 591\coursecollab\backend\services\courseService.js">
+      <metrics statements="42" coveredstatements="12" conditionals="32" coveredconditionals="12" methods="8" coveredmethods="1"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="6" count="0" type="stmt"/>
+      <line num="8" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="9" count="0" type="stmt"/>
+      <line num="16" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="17" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="20" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="21" count="0" type="stmt"/>
+      <line num="28" count="0" type="stmt"/>
+      <line num="31" count="0" type="stmt"/>
+      <line num="38" count="0" type="stmt"/>
+      <line num="40" count="0" type="stmt"/>
+      <line num="49" count="0" type="stmt"/>
+      <line num="54" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="55" count="0" type="stmt"/>
+      <line num="59" count="0" type="stmt"/>
+      <line num="63" count="0" type="stmt"/>
+      <line num="64" count="0" type="stmt"/>
+      <line num="68" count="0" type="stmt"/>
+      <line num="72" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="73" count="0" type="stmt"/>
+      <line num="77" count="0" type="stmt"/>
+      <line num="78" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="79" count="0" type="stmt"/>
+      <line num="83" count="10" type="stmt"/>
+      <line num="84" count="10" type="cond" truecount="2" falsecount="0"/>
+      <line num="86" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="87" count="8" type="cond" truecount="2" falsecount="0"/>
+      <line num="89" count="6" type="cond" truecount="4" falsecount="0"/>
+      <line num="90" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="93" count="4" type="stmt"/>
+      <line num="94" count="4" type="stmt"/>
+      <line num="95" count="4" type="stmt"/>
+      <line num="97" count="4" type="stmt"/>
+      <line num="101" count="0" type="stmt"/>
+      <line num="102" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="104" count="0" type="stmt"/>
+      <line num="105" count="0" type="stmt"/>
+      <line num="107" count="0" type="stmt"/>
+      <line num="108" count="0" type="stmt"/>
+      <line num="110" count="0" type="stmt"/>
+      <line num="114" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

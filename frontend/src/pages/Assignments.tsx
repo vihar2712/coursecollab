@@ -29,8 +29,7 @@ interface AssignmentData {
   id: string;
   title: string;
   description: string;
-  course: string;
-  courseCode: string;
+  course:  { _id: string; title: string; code: string; };
   dueDate: string;
   maxPoints: number;
   type: 'individual' | 'team';
@@ -48,60 +47,37 @@ const Assignments: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data - replace with actual API call
-    const mockAssignments: AssignmentData[] = [
-      {
-        id: '1',
-        title: 'Project Proposal',
-        description: 'Submit a detailed project proposal for your software engineering project.',
-        course: 'Software Engineering',
-        courseCode: 'CSC 591',
-        dueDate: '2024-02-15T23:59:59Z',
-        maxPoints: 100,
-        type: 'team',
-        status: 'submitted',
-        peerReviewEnabled: true,
-        submissionsCount: 8,
-        reviewsCount: 24,
-      },
-      {
-        id: '2',
-        title: 'System Design Document',
-        description: 'Create a comprehensive system design document for your project.',
-        course: 'Software Engineering',
-        courseCode: 'CSC 591',
-        dueDate: '2024-03-01T23:59:59Z',
-        maxPoints: 150,
-        type: 'team',
-        status: 'draft',
-        peerReviewEnabled: true,
-        submissionsCount: 0,
-        reviewsCount: 0,
-      },
-      {
-        id: '3',
-        title: 'Database Schema Design',
-        description: 'Design and implement a database schema for your application.',
-        course: 'Database Systems',
-        courseCode: 'CSC 540',
-        dueDate: '2024-02-28T23:59:59Z',
-        maxPoints: 120,
-        type: 'individual',
-        status: 'pending',
-        peerReviewEnabled: false,
-        submissionsCount: 0,
-        reviewsCount: 0,
-      },
-    ];
-    
-    setAssignments(mockAssignments);
-    setLoading(false);
+    fetchAssignments();
   }, []);
+
+  const fetchAssignments = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/assignments', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch assignments');
+      }
+
+      const data = await response.json();
+      setAssignments(data.assignments);
+    } catch (error) {
+      console.error('Error fetching assignments:', error);
+      setAssignments([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredAssignments = assignments.filter(assignment =>
     assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    assignment.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    assignment.courseCode.toLowerCase().includes(searchTerm.toLowerCase())
+    assignment.course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    assignment.course.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getStatusColor = (status: string) => {
@@ -185,7 +161,7 @@ const Assignments: React.FC = () => {
                       {assignment.title}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {assignment.courseCode} - {assignment.course}
+                      {assignment.course.code} - {assignment.course.title}
                     </Typography>
                   </Box>
                 </Box>

@@ -27,6 +27,7 @@ import {
   Description,
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,40 +57,36 @@ const CourseDetail: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    // Mock data - replace with actual API call
-    const mockCourse = {
-      id: '1',
-      title: 'Software Engineering',
-      code: 'CSC 591',
-      description: 'Advanced software engineering principles and practices including agile development, testing, and project management.',
-      instructor: 'Dr. Smith',
-      semester: 'Fall',
-      year: 2024,
-      credits: 3,
-      capacity: 30,
-      currentEnrollment: 25,
-      schedule: {
-        days: ['Monday', 'Wednesday'],
-        time: { start: '10:00 AM', end: '11:30 AM' },
-        location: 'Room 101',
-      },
-      assignments: [
-        { id: '1', title: 'Project Proposal', dueDate: '2024-02-15', status: 'submitted' },
-        { id: '2', title: 'System Design', dueDate: '2024-03-01', status: 'pending' },
-        { id: '3', title: 'Final Presentation', dueDate: '2024-04-15', status: 'pending' },
-      ],
-      students: [
-        { id: '1', name: 'John Doe', email: 'john@example.com' },
-        { id: '2', name: 'Jane Smith', email: 'jane@example.com' },
-        { id: '3', name: 'Bob Johnson', email: 'bob@example.com' },
-      ],
-    };
-    
-    setCourse(mockCourse);
-    setLoading(false);
+    fetchCourseDetails();
   }, [id]);
+
+  const fetchCourseDetails = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/courses/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch course details');
+      }
+
+      const data = await response.json();
+      setCourse(data);
+    } catch (error) {
+      console.error('Error fetching course details:', error);
+      setCourse(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -189,13 +186,13 @@ const CourseDetail: React.FC = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <People sx={{ mr: 1, fontSize: 16 }} />
                 <Typography variant="body2">
-                  {course.instructor}
+                  {typeof course.instructor === 'object' ? course.instructor.firstName + ' ' + course.instructor.lastName : course.instructor}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <Schedule sx={{ mr: 1, fontSize: 16 }} />
                 <Typography variant="body2">
-                  {course.schedule.days.join(', ')} {course.schedule.time.start} - {course.schedule.time.end}
+                  {course.schedule.days.join(', ')} {typeof course.schedule.time === 'object' ? `${course.schedule.time.start} - ${course.schedule.time.end}` : course.schedule.time}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>

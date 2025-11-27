@@ -25,6 +25,7 @@ import {
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import { useAuth } from '../contexts/AuthContext';
 
 const AssignmentDetail: React.FC = () => {
   const { id } = useParams();
@@ -33,52 +34,32 @@ const AssignmentDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data - replace with actual API call
-    const mockAssignment = {
-      id: '1',
-      title: 'Project Proposal',
-      description: 'Submit a detailed project proposal for your software engineering project. The proposal should include project overview, objectives, methodology, timeline, and expected outcomes.',
-      course: 'Software Engineering',
-      courseCode: 'CSC 591',
-      dueDate: '2024-02-15T23:59:59Z',
-      maxPoints: 100,
-      type: 'team',
-      status: 'submitted',
-      peerReviewEnabled: true,
-      instructions: `
-        ## Project Proposal Requirements
-        
-        1. **Project Overview**: Provide a clear description of your project
-        2. **Objectives**: Define specific, measurable goals
-        3. **Methodology**: Describe your approach and tools
-        4. **Timeline**: Create a detailed project schedule
-        5. **Expected Outcomes**: What will you deliver?
-        
-        ### Submission Guidelines
-        - Submit as a PDF document
-        - Maximum 10 pages
-        - Include team member names and roles
-        - Use proper academic formatting
-      `,
-      attachments: [
-        { name: 'proposal_template.docx', size: '2.1 MB' },
-        { name: 'rubric.pdf', size: '156 KB' },
-      ],
-      submission: {
-        id: 'sub1',
-        status: 'submitted',
-        submittedAt: '2024-02-14T10:30:00Z',
-        files: [
-          { name: 'team_alpha_proposal.pdf', size: '3.2 MB' },
-        ],
-        feedback: 'Great work on the proposal! The methodology section could be more detailed.',
-        grade: 85,
-      },
-    };
-    
-    setAssignment(mockAssignment);
-    setLoading(false);
+    fetchAssignment();
   }, [id]);
+
+  const fetchAssignment = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/assignments/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch assignment');
+      }
+
+      const data = await response.json();
+      setAssignment(data);
+    } catch (error) {
+      console.error('Error fetching assignment:', error);
+      setAssignment(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (

@@ -13,45 +13,42 @@ const generateToken = (id) => {
   });
 };
 
-// @route   POST /api/auth/register
-// @desc    Register a new user
+// ------------------ STUDENT REGISTRATION ------------------
+// @route   POST /api/auth/register/student
+// @desc    Register a new student
 // @access  Public
-router.post('/register', [
+router.post('/register/student', [
   body('firstName').trim().isLength({ min: 1 }).withMessage('First name is required'),
   body('lastName').trim().isLength({ min: 1 }).withMessage('Last name is required'),
   body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('role').optional().isIn(['student', 'instructor']).withMessage('Invalid role')
+  body('studentId').trim().isLength({ min: 1 }).withMessage('Student ID is required'),
+  body('department').trim().isLength({ min: 1 }).withMessage('Department is required'),
+  body('year').isIn(['1st', '2nd', '3rd', '4th', 'Graduate', 'PhD']).withMessage('Invalid year')
 ], async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+    if (handleValidationErrors(req, res)) return;
+
+    const { firstName, lastName, email, password, studentId, department, year } = req.body;
+
+    // Check email uniqueness
+    if (await checkExistingEmail(email)) {
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    const { firstName, lastName, email, password, role = 'student', studentId, department, year } = req.body;
-
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists with this email' });
+    // Check student ID uniqueness
+    const existingStudent = await User.findOne({ studentId });
+    if (existingStudent) {
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    // Check if student ID is unique (if provided)
-    if (studentId) {
-      const existingStudentId = await User.findOne({ studentId });
-      if (existingStudentId) {
-        return res.status(400).json({ message: 'Student ID already exists' });
-      }
-    }
-
-    // Create new user
+    // Create student user
     const user = new User({
       firstName,
       lastName,
       email,
       password,
-      role,
+      role: 'student',
       studentId,
       department,
       year
@@ -59,11 +56,10 @@ router.post('/register', [
 
     await user.save();
 
-    // Generate token
     const token = generateToken(user._id);
 
     res.status(201).json({
-      message: 'User registered successfully',
+      message: 'Student registered successfully',
       token,
       user: {
         id: user._id,
@@ -77,7 +73,58 @@ router.post('/register', [
       }
     });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Student registration error:', error);
+    res.status(500).json({ message: 'Server error during registration' });
+  }
+});
+
+
+// ------------------ INSTRUCTOR REGISTRATION ------------------
+// @route   POST /api/auth/register/instructor
+// @desc    Register a new instructor
+// @access  Public
+router.post('/register/instructor', [
+  body('firstName').trim().isLength({ min: 1 }).withMessage('First name is required'),
+  body('lastName').trim().isLength({ min: 1 }).withMessage('Last name is required'),
+  body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+], async (req, res) => {
+  try {
+    if (handleValidationErrors(req, res)) return;
+
+    const { firstName, lastName, email, password } = req.body;
+
+    // Check email uniqueness
+    if (await checkExistingEmail(email)) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    // Create instructor user
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      password,
+      role: 'instructor'
+    });
+
+    await user.save();
+
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      message: 'Instructor registered successfully',
+      token,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Instructor registration error:', error);
     res.status(500).json({ message: 'Server error during registration' });
   }
 });

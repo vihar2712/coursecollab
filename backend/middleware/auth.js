@@ -54,7 +54,7 @@ const isStudent = (req, res, next) => {
 };
 
 // Check if user owns resource or is instructor/admin
-const isOwnerOrInstructor = (req, res, next) => {
+const canEditUserProfile = (req, res, next) => {
   const resourceUserId = req.params.userId || req.body.userId;
   
   if (req.user.role === 'admin' || req.user.role === 'instructor') {
@@ -124,7 +124,7 @@ module.exports = {
   isInstructor,
   isAdmin,
   isStudent,
-  isOwnerOrInstructor,
+  canEditUserProfile,
   isEnrolledInCourse,
   isCourseInstructor
 };

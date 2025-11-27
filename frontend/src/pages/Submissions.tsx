@@ -77,63 +77,32 @@ const Submissions: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data - replace with actual API call
-    const mockSubmissions: Submission[] = [
-      {
-        id: '1',
-        assignment: 'Project Proposal',
-        assignmentId: '1',
-        course: 'Software Engineering',
-        courseCode: 'CSC 591',
-        submittedAt: '2024-02-14T10:30:00Z',
-        status: 'graded',
-        grade: 85,
-        maxPoints: 100,
-        feedback: 'Great work on the proposal! The methodology section could be more detailed.',
-        files: [
-          { name: 'team_alpha_proposal.pdf', size: '3.2 MB' },
-        ],
-        team: 'Team Alpha',
-        peerReviewEnabled: true,
-        reviewsCount: 3,
-      },
-      {
-        id: '2',
-        assignment: 'System Design Document',
-        assignmentId: '2',
-        course: 'Software Engineering',
-        courseCode: 'CSC 591',
-        submittedAt: '2024-02-20T15:45:00Z',
-        status: 'submitted',
-        maxPoints: 150,
-        files: [
-          { name: 'system_design.pdf', size: '5.1 MB' },
-          { name: 'architecture_diagram.png', size: '2.3 MB' },
-        ],
-        team: 'Team Alpha',
-        peerReviewEnabled: true,
-        reviewsCount: 1,
-      },
-      {
-        id: '3',
-        assignment: 'Database Schema Design',
-        assignmentId: '3',
-        course: 'Database Systems',
-        courseCode: 'CSC 540',
-        submittedAt: '2024-02-25T23:30:00Z',
-        status: 'late',
-        maxPoints: 120,
-        files: [
-          { name: 'schema_design.sql', size: '1.2 MB' },
-        ],
-        peerReviewEnabled: false,
-        reviewsCount: 0,
-      },
-    ];
-    
-    setSubmissions(mockSubmissions);
-    setLoading(false);
+    fetchSubmissions();
   }, []);
+
+  const fetchSubmissions = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/submissions', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch submissions');
+      }
+
+      const data = await response.json();
+      setSubmissions(data.submissions);
+    } catch (error) {
+      console.error('Error fetching submissions:', error);
+      setSubmissions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
