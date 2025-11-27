@@ -18,14 +18,13 @@ jobs:
         with:
           node-version: 20
 
-      - name: Go to backend folder
-        run: cd backend
-        
       - name: Install Node.js dependencies
         run: npm install
+        working-directory: backend
 
       - name: Run tests
         run: npm test --coverage
+        working-directory: backend
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
